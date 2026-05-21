@@ -11,11 +11,24 @@ datasource db {
 
 // Tabel untuk menyimpan tempat makan yang disimpan
 model Merchant {
-  id              Int      @id @default(autoincrement())
-  google_place_id String   @unique @db.VarChar(100)
-  nama_merchant   String   @db.VarChar(150)
-  alamat          String?  @db.Text
-  createdAt       DateTime @default(now())
+  id              Int        @id @default(autoincrement())
+  google_place_id String     @unique @db.VarChar(100)
+  nama_merchant   String     @db.VarChar(150)
+  alamat          String?    @db.Text
+  createdAt       DateTime   @default(now())
+  favorites       Favorite[]
 
   @@map("merchants")
+}
+
+model Favorite {
+  id          Int      @id @default(autoincrement())
+  user_id     String   @db.VarChar(100)
+  merchant_id Int
+  createdAt   DateTime @default(now())
+
+  // Relations
+  merchant Merchant @relation(fields: [merchant_id], references: [id], onDelete: Cascade)
+
+  @@map("favorites")
 }
