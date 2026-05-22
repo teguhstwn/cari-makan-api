@@ -40,24 +40,28 @@ Anda memerlukan pustaka pihak ketiga untuk enkripsi kata sandi dan pembuatan tok
   4. Jika token tidak valid atau kedaluwarsa, kembalikan response 403 Forbidden.
   5. Jika valid, simpan payload user (misal `id` dan `username`) ke dalam objek request (`req.user`) dan panggil `next()`.
 
-*Catatan untuk TypeScript*: Anda mungkin perlu melakukan extend tipe `Request` Express untuk menambahkan properti `user`. Anda bisa mendefinisikannya secara inline atau menggunakan deklarasi file `.d.ts`. Contoh inline:
+*Catatan untuk TypeScript*: Untuk menghindari *error* TypeScript saat mengakses `req.user`, Anda perlu memperluas tipe `Request` Express menggunakan *Module Augmentation*. Tambahkan deklarasi berikut pada file konfigurasi/types Anda (misal `src/types/express/index.d.ts` atau langsung di atas file middleware):
 ```typescript
-import type { Request, Response, NextFunction } from 'express';
-export interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    username: string;
-  };
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: string;
+        username: string;
+      };
+    }
+  }
 }
 ```
 
 ### 4. Pembuatan Controller (`src/controllers/userController.ts`)
 - Buat file baru bernama `userController.ts` di dalam folder `src/controllers/`.
+- **Penting:** Pastikan untuk membungkus kode setiap fungsi controller di bawah ini dalam blok `try...catch`. Jika terjadi *error* dari database atau eksekusi, kembalikan respons error standar dengan status `500 Internal Server Error`.
 - Implementasikan fungsi-fungsi berikut:
 
 #### A. `registerUser` (Registrasi)
 1. Ambil `username`, `email`, `password`, dan `nama_lengkap` dari `req.body`.
-2. Validasi input: pastikan `username`, `email`, dan `password` terisi. Jika tidak, kembalikan response 400 Bad Request.
+2. Validasi input: pastikan `username`, `email`, dan `password` terisi. Pastikan juga panjang `password` minimal 6 karakter. Jika tidak memenuhi syarat, kembalikan response 400 Bad Request.
 3. Cek apakah `username` atau `email` sudah terdaftar di database menggunakan `prisma.user.findFirst()`. Jika ada yang sama, kembalikan response 400 Bad Request (misal: "Username/Email sudah digunakan").
 4. Enkripsi (hash) `password` menggunakan `bcrypt.hash(password, 10)`.
 5. Simpan data user baru ke database menggunakan `prisma.user.create()`.
