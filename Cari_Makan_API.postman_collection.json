@@ -1,0 +1,232 @@
+{
+	"info": {
+		"name": "Cari Makan API",
+		"description": "Koleksi API Postman untuk project Cari Makan API. Dilengkapi dengan manajemen user, tempat, merchant, dan fitur favorit.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"johndoe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"nama_lengkap\": \"John Doe\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						}
+					}
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"profile"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Favorites",
+			"item": [
+				{
+					"name": "Add Favorite",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"google_place_id\": \"ChIJN1t_tDeuEmsRUsoyG83frY4\",\n  \"nama_merchant\": \"Warteg Bahari\",\n  \"alamat\": \"Jl. Merdeka No 1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/favorites",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"favorites"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Favorites",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/favorites?kategori=restaurant&rating=4&harga=2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"favorites"
+							],
+							"query": [
+								{
+									"key": "kategori",
+									"value": "restaurant",
+									"description": "Menyaring berdasarkan jenis tempat (kategori)"
+								},
+								{
+									"key": "rating",
+									"value": "4",
+									"description": "Menyaring rating minimum"
+								},
+								{
+									"key": "harga",
+									"value": "2",
+									"description": "Menyaring tingkat harga (0-4)"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Places",
+			"item": [
+				{
+					"name": "Get Nearby Places",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/places/nearby?lat=-6.200000&lng=106.816666&radius=1500",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"places",
+								"nearby"
+							],
+							"query": [
+								{
+									"key": "lat",
+									"value": "-6.200000"
+								},
+								{
+									"key": "lng",
+									"value": "106.816666"
+								},
+								{
+									"key": "radius",
+									"value": "1500"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Recommended Places",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/places/recommendations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"places",
+								"recommendations"
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "MASUKKAN_TOKEN_DISINI",
+			"type": "string"
+		}
+	]
+}
