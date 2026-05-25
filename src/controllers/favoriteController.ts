@@ -4,11 +4,16 @@ import { successResponse, errorResponse } from '../utils/response.js';
 
 export const addFavorite = async (req: Request, res: Response) => {
   try {
-    const { google_place_id, nama_merchant, alamat, user_id } = req.body;
+    const { google_place_id, nama_merchant, alamat } = req.body;
+    const user_id = req.user?.id;
+
+    if (!user_id) {
+      return errorResponse(res, 'Unauthorized: User ID tidak ditemukan', 401);
+    }
 
     // Validasi data input
-    if (!google_place_id || !nama_merchant || !user_id) {
-      return errorResponse(res, 'google_place_id, nama_merchant, and user_id are required fields', 400);
+    if (!google_place_id || !nama_merchant) {
+      return errorResponse(res, 'google_place_id dan nama_merchant harus diisi', 400);
     }
 
     // 1. Lakukan upsert untuk Merchant
