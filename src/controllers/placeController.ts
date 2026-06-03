@@ -185,3 +185,52 @@ export const searchPlaces = async (req: Request, res: Response) => {
     );
   }
 };
+
+export const getPlaceDetails = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return errorResponse(res, 'Place ID (id) is required', 400);
+    }
+
+    const apiKey = process.env.GOOGLE_API_KEY;
+    if (!apiKey) {
+      return errorResponse(res, 'Google API Key is not configured on the server', 500);
+    }
+
+    const googleUrl = `https://places.googleapis.com/v1/places/${id}`;
+    const response = await axios.get(googleUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': apiKey,
+        'X-Goog-FieldMask': 'id,displayName,formattedAddress,location,primaryType,rating',
+      },
+    });
+
+    const item = response.data;
+
+    const placeDetails = {
+      place_id: item.id,
+      name: item.displayName?.text || '',
+      vicinity: item.formattedAddress || '',
+      koordinat: {
+        lat: item.location?.latitude,
+        lng: item.location?.longitude,
+      },
+      primaryType: item.primaryType || '',
+      rating: item.rating,
+      items: [], // Placeholder items agar sesuai dengan standar response format
+    };
+
+    return successResponse(res, 'Detail tempat berhasil diambil', placeDetails);
+  } catch (error: any) {
+    return errorResponse(
+      res,
+      'Gagal mengambil detail tempat',
+      500,
+      error.response?.data?.error?.message || error.message || error
+    );
+  }
+};
+
