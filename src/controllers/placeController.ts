@@ -110,3 +110,78 @@ export const getRecommendedPlaces = async (req: Request, res: Response) => {
     return errorResponse(res, 'Gagal mengambil data rekomendasi tempat makan', 500, error);
   }
 };
+
+export const searchPlaces = async (req: Request, res: Response) => {
+  try {
+    const { lat, lng, type, radius } = req.query;
+
+    if (!lat || !lng || !type) {
+      return errorResponse(res, 'Latitude (lat), Longitude (lng), and Type (type) are required', 400);
+    }
+
+    if (type !== 'food' && type !== 'drink') {
+      return errorResponse(res, 'Type must be either "food" or "drink"', 400);
+    }
+
+    const apiKey = process.env.GOOGLE_API_KEY;
+    if (!apiKey) {
+      return errorResponse(res, 'Google API Key is not configured on the server', 500);
+    }
+
+    let includedTypes: string[] = [];
+    if (type === 'food') {
+      includedTypes = ['restaurant', 'fast_food_restaurant', 'meal_delivery', 'meal_takeaway'];
+    } else {
+      includedTypes = ['cafe', 'coffee_shop', 'bar'];
+    }
+
+    const googleUrl = 'https://places.googleapis.com/v1/places:searchNearby';
+    const response = await axios.post(
+      googleUrl,
+      {
+        includedTypes,
+        maxResultCount: 20,
+        locationRestriction: {
+          circle: {
+            center: {
+              latitude: parseFloat(lat as string),
+              longitude: parseFloat(lng as string),
+            },
+            radius: parseInt(radius as string) || 1500,
+          },
+        },
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Goog-Api-Key': apiKey,
+          'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.primaryType,places.location,places.rating',
+        },
+      }
+    );
+
+    const rawPlaces = response.data.places || [];
+
+    const places = rawPlaces.map((item: any) => ({
+      place_id: item.id,
+      name: item.displayName?.text || '',
+      vicinity: item.formattedAddress || '',
+      koordinat: {
+        lat: item.location?.latitude,
+        lng: item.location?.longitude,
+      },
+      primaryType: item.primaryType || '',
+      rating: item.rating,
+      items: [], // Placeholder items agar sesuai dengan standar response format
+    }));
+
+    return successResponse(res, 'Data berhasil diambil', places);
+  } catch (error: any) {
+    return errorResponse(
+      res,
+      'Gagal melakukan pencarian tempat',
+      500,
+      error.response?.data?.error?.message || error.message || error
+    );
+  }
+};
