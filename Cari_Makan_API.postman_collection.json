@@ -213,6 +213,62 @@
 							]
 						}
 					}
+				},
+				{
+					"name": "Search Places",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/places/search?lat=-6.2088&lng=106.8456&type=food&radius=1500",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"places",
+								"search"
+							],
+							"query": [
+								{
+									"key": "lat",
+									"value": "-6.2088"
+								},
+								{
+									"key": "lng",
+									"value": "106.8456"
+								},
+								{
+									"key": "type",
+									"value": "food",
+									"description": "food atau drink"
+								},
+								{
+									"key": "radius",
+									"value": "1500",
+									"description": "opsional"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Place Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/places/ChIJwwNVonP0aS4R-bCgz6fyZms",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"places",
+								"ChIJwwNVonP0aS4R-bCgz6fyZms"
+							]
+						}
+					}
 				}
 			]
 		}
