@@ -204,7 +204,7 @@ export const getPlaceDetails = async (req: Request, res: Response) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': apiKey,
-        'X-Goog-FieldMask': 'id,displayName,formattedAddress,location,primaryType,rating',
+        'X-Goog-FieldMask': 'id,displayName,formattedAddress,location,primaryType,rating,nationalPhoneNumber,regularOpeningHours,websiteUri,userRatingCount,reviews,photos',
       },
     });
 
@@ -213,13 +213,20 @@ export const getPlaceDetails = async (req: Request, res: Response) => {
     const placeDetails = {
       place_id: item.id,
       name: item.displayName?.text || '',
+      formatted_address: item.formattedAddress || '',
+      formatted_phone_number: item.nationalPhoneNumber || '',
+      opening_hours: item.regularOpeningHours || null,
+      website: item.websiteUri || '',
+      rating: item.rating || null,
+      user_ratings_total: item.userRatingCount || 0,
+      reviews: item.reviews || [],
+      photos: item.photos || [],
       vicinity: item.formattedAddress || '',
       koordinat: {
         lat: item.location?.latitude,
         lng: item.location?.longitude,
       },
       primaryType: item.primaryType || '',
-      rating: item.rating,
       items: [], // Placeholder items agar sesuai dengan standar response format
     };
 
