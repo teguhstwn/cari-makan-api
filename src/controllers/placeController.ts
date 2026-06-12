@@ -241,3 +241,76 @@ export const getPlaceDetails = async (req: Request, res: Response) => {
   }
 };
 
+export const proxyImage = async (req: Request, res: Response) => {
+  try {
+    let name = '';
+    if (Array.isArray(req.params.name)) {
+      name = req.params.name.join('/');
+    } else if (typeof req.params.name === 'string') {
+      name = req.params.name;
+    } else {
+      const fallback = req.params['0'];
+      if (Array.isArray(fallback)) {
+        name = fallback.join('/');
+      } else if (typeof fallback === 'string') {
+        name = fallback;
+      }
+    }
+
+    if (!name) {
+      return errorResponse(res, 'Media name is required', 400);
+    }
+
+    const apiKey = process.env.GOOGLE_API_KEY;
+    if (!apiKey) {
+      return errorResponse(res, 'Google API Key is not configured on the server', 500);
+    }
+
+    const maxHeightPx = req.query.maxHeightPx || '400';
+    const maxWidthPx = req.query.maxWidthPx || '400';
+
+    const googleUrl = `https://places.googleapis.com/v1/${name}/media`;
+
+    const response = await axios.get(googleUrl, {
+      params: {
+        maxHeightPx,
+        maxWidthPx,
+        key: apiKey,
+      },
+      responseType: 'stream',
+    });
+
+    const contentTypeHeader = response.headers['content-type'];
+    const contentType = typeof contentTypeHeader === 'string' ? contentTypeHeader : 'image/jpeg';
+    res.setHeader('Content-Type', contentType);
+
+    response.data.pipe(res);
+  } catch (error: any) {
+    let googleError = error.message || error;
+    if (error.response?.data && typeof error.response.data.on === 'function') {
+      try {
+        let errorData = '';
+        for await (const chunk of error.response.data) {
+          errorData += chunk;
+        }
+        const parsed = JSON.parse(errorData);
+        if (parsed.error?.message) {
+          googleError = parsed.error.message;
+        } else {
+          googleError = errorData;
+        }
+      } catch (e) {
+        // failed to parse or read, fallback to error.message
+      }
+    }
+    const statusCode = error.response?.status || 500;
+    return errorResponse(
+      res,
+      'Gagal mengambil gambar dari Google Places',
+      statusCode,
+      googleError
+    );
+  }
+};
+
+

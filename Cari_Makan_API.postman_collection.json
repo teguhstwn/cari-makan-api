@@ -289,6 +289,43 @@
 							]
 						}
 					}
+				},
+				{
+					"name": "Get Place Photo Media (Proxy)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/places/media/places/ChIJwwNVonP0aS4R-bCgz6fyZms/photos/AaVGc3lN9eFuQPW_-1HIpo2DhfU_L8eJ1guY1EPXTjqGw1IfmVhaLRuckUwXMt89sAVbrNQXxv5jf-4wo41fOzJwIqcOHkJdzG-47zHrhAvtqqdPuBn-m3SEBmTNM_ozyMjK4Y_9NP2H9NY-EJ3KWF4dpMQW2SVedwrE_1TZO1ggaxv-0DDjsJiuujIeumIiqmAndsEZjR6peNHMdyo8KzVhJYHHNVuonM-Po55oZ51EYLgpvrbLXPJrr8X2l9X-m7RF2zMOwLPpgcENVwFVGKmJGqvOMuGrh99IcmFxBY-Y3QWtBeO88aTU6ydWwWpRepl34aUH2veQwIwn-kE_hsASacC4fQH9-NckPQFknVhPipBzifjFqugzYv8m6PqPzgK3kRVlZ2fuuR_u-LS9FHmn_L54d8MAkGVUNpFCc4ZwZdl2LqjE4ndgpIZaa_xh58vZ?maxHeightPx=400&maxWidthPx=400",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"places",
+								"media",
+								"places",
+								"ChIJwwNVonP0aS4R-bCgz6fyZms",
+								"photos",
+								"AaVGc3lN9eFuQPW_-1HIpo2DhfU_L8eJ1guY1EPXTjqGw1IfmVhaLRuckUwXMt89sAVbrNQXxv5jf-4wo41fOzJwIqcOHkJdzG-47zHrhAvtqqdPuBn-m3SEBmTNM_ozyMjK4Y_9NP2H9NY-EJ3KWF4dpMQW2SVedwrE_1TZO1ggaxv-0DDjsJiuujIeumIiqmAndsEZjR6peNHMdyo8KzVhJYHHNVuonM-Po55oZ51EYLgpvrbLXPJrr8X2l9X-m7RF2zMOwLPpgcENVwFVGKmJGqvOMuGrh99IcmFxBY-Y3QWtBeO88aTU6ydWwWpRepl34aUH2veQwIwn-kE_hsASacC4fQH9-NckPQFknVhPipBzifjFqugzYv8m6PqPzgK3kRVlZ2fuuR_u-LS9FHmn_L54d8MAkGVUNpFCc4ZwZdl2LqjE4ndgpIZaa_xh58vZ"
+							],
+							"query": [
+								{
+									"key": "maxHeightPx",
+									"value": "400"
+								},
+								{
+									"key": "maxWidthPx",
+									"value": "400"
+								}
+							]
+						}
+					}
 				}
 			]
 		}
